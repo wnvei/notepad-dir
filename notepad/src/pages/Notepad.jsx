@@ -10,7 +10,7 @@ const Notepad = () => {
   const [typingUsers, setTypingUsers] = useState({});
 
   useEffect(() => {
-    socketRef.current = io(process.env.REACT_APP_API_URL);
+    socketRef.current = io(import.meta.env.VITE_API_URL);
     const socket = socketRef.current;
 
     socket.emit("join", code);
