@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: serif;
+  background: #ffffff;
+  font-family: "IBM Plex Serif", serif;
+}
+
+.ibm-plex-serif-regular {
+  font-family: "IBM Plex Serif", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.shiny-text {
+  background: linear-gradient(110deg, #d3d3d3, white, #d3d3d3);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+
+  animation: shine 4s linear infinite, pulse-glow 2.5s ease-in-out infinite;
+
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.7))
+          drop-shadow(0 0 40px rgba(255, 255, 255, 0.7))
+          drop-shadow(0 0 60px rgba(255, 255, 255, 0.7));
+}
