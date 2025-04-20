@@ -41,7 +41,7 @@ const PrivateNote = () => {
 
     fetchNote();
 
-    socketRef.current = io(process.env.REACT_APP_API_URL);
+    socketRef.current = io(import.meta.env.VITE_API_URL);
     const socket = socketRef.current;
 
     socket.emit("join-private", code);
