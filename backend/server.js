@@ -6,7 +6,10 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  methods: ['GET', 'POST']
+}));
 
 const server = http.createServer(app);
 const io = socketIo(server, {
