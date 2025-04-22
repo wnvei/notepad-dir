@@ -77,10 +77,51 @@ io.on('connection', (socket) => {
     await supabase.from('locked_rooms').update({ content }).eq('code', code);
   });
 
-  socket.on('disconnect', () => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('User disconnected:', socket.id);
+  const cursors = {};
+  const clientColors = {};
+
+  socket.on('register-client', ({ code, clientId }) => {
+    if (!cursors[code]) {
+      cursors[code] = {};
     }
+    if (!clientColors[code]) {
+      clientColors[code] = {};
+    }
+    const hue = Math.floor(Math.random() * 360);
+    clientColors[code][clientId] = `hsl(${hue}, 80%, 60%)`;
+    cursors[code][clientId] = {
+      position: 0,
+      color: clientColors[code][clientId]
+    };
+    socket.emit('cursor-positions', cursors[code]);
+    socket.to(code).emit('cursor-positions', cursors[code]);
+  });
+
+  socket.on('cursor-position', ({ code, clientId, position }) => {
+    if (!cursors[code]) {
+      cursors[code] = {};
+    }
+    if (!cursors[code][clientId]) {
+      cursors[code][clientId] = {
+        position,
+        color: clientColors[code]?.[clientId] || `hsl(${Math.floor(Math.random() * 360)}, 80%, 60%)`
+      };
+    } else {
+      cursors[code][clientId].position = position;
+    }
+    io.to(code).emit('cursor-positions', cursors[code]);
+  });
+
+  socket.on('disconnect', () => {
+    Object.keys(cursors).forEach(roomCode => {
+      Object.keys(cursors[roomCode]).forEach(clientId => {
+        if (cursors[roomCode][clientId].socketId === socket.id) {
+          delete cursors[roomCode][clientId];
+          delete clientColors[roomCode][clientId];
+          io.to(roomCode).emit('cursor-positions', cursors[roomCode]);
+        }
+      });
+    });
   });
 });
 
